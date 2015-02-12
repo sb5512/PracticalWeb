@@ -9,15 +9,15 @@ ERROR_SIGMA_ANGLE = 2 #degrees
 ERROR_SIGMA_ROTATION_ANGLE = 5 #degrees 
 
 def getX(initialX , initialTheta , errorDistance):
-    xNew = initialX + (DISTANCE + getRandomNumberGaussian()) * math.cos(initialTheta)
+    xNew = initialX + (DISTANCE + errorDistance * math.cos(initialTheta)
     return xNew
 
 def getY(initialY , initialTheta , errorDistance):
-    yNew = initialY + (DISTANCE + getRandomNumberGaussian()) * math.cos(initialTheta)
+    yNew = initialY + (DISTANCE + errorDistance * math.cos(initialTheta)
     return yNew
 
 def getTheta(initialTheta , errorAngle ):
-    thetaNew = initialTheta + getRandomNumberGaussian() 
+    thetaNew = initialTheta + errorAngle 
     return thetaNew
 
 #def getRandomX():
@@ -30,9 +30,8 @@ def getTheta(initialTheta , errorAngle ):
  #   return random.randint(0, 360)
 
 def getRandomNumberGaussian(sigma):
-    zeroMean = 0 # Need this to have all particles
-    sigma = 0.1 # 10% deviation allowed
-    return random.gauss(zeroMean , sigma)
+    mean = 0 
+    return random.gauss(mean , sigma)
 
 numberOfParticles = 100
 
@@ -55,7 +54,7 @@ while True:
         initialX = getX(initialX , initialTheta , errorDistance)
         initialY = getY(initialY , initialTheta , errorDistance)
         
-        errorTheta = getRandomNumberGaussian (sigma)
+        errorTheta = getRandomNumberGaussian(ERROR_SIGMA_ANGLE)
         initialTheta = getTheta(initialTheta , errorTheta)
         #particles = [(getX(initialX), getY(initialY), getRandomTheta(initialTheta)) for i in range(numberOfParticles)]
     print "drawParticles:" + str(particles)
