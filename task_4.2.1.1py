@@ -1,0 +1,35 @@
+import Robot_API
+import time
+import brickpi
+improt random
+
+def Right90deg(robot):
+	Robot_API.robot_api.turn(robot,90,'r')
+
+def moveF10(robot):
+	Robot_API.robot_api.move(robot, 'f', 10)
+
+def RecordPosition(robot):
+  
+
+def moveSquareMeasure(robot):
+	for i in range(0,4):
+    for j in range(0, 4):
+		  moveF10(robot)
+      input("Waiting for a slave to do the measurements")
+		Right90deg(robot)
+    input("Waiting for a slave to do the measurements")
+
+def moveSquareDemo(robot):
+	for i in range(0,4):
+    for j in range(0, 4):
+		  moveF10(robot)
+      RecordPosition(robot)
+		Right90deg(robot)
+    RecordPosition(robot)
+
+robot = Robot_API.robot_api.getRobotInstance()
+
+robot.moveSquareMeasure(robot)
+
+robot.terminate()

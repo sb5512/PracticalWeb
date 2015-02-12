@@ -1,0 +1,77 @@
+# 
+# USAGE: 
+#   robot = getRobotInstance()
+# 	turn(robot,90,'r')
+import brickpi
+import time
+import math
+
+
+COMMON_MOTOR_PARAMS = {"max_speed" : 12.0, "max_accelaration" : 6.0, "feedForwardGain" : 255/20.0 , "minOutput" : -255, "maxOutput" : 255}
+MOTOR_PARAMS = {"0": {"minPWM" : 18.0, "ku" : 660.0, "k_i" : 500}, "2": {"minPWM" : 18.0, "ku" : 642.0, "k_i" : 500}}
+VALID_MOTOR_IDS = [0,2]
+DISTANCE_BETWEEN_TWO_TYRES = 15.0
+TYRE_DIAMETER = 5.5
+PI = math.pi
+
+def initializeInterface():
+	interface=brickpi.Interface()
+	interface.initialize()
+	return interface
+
+def enableAllMotors(interface):
+	for i in VALID_MOTOR_IDS:
+		interface.motorEnable(i)
+
+def getMotorParams(interface,ID):
+	motorParams = interface.MotorAngleControllerParameters()
+	motorParams.maxRotationAcceleration = COMMON_MOTOR_PARAMS["max_accelaration"]
+	motorParams.maxRotationSpeed = COMMON_MOTOR_PARAMS["max_speed"]
+	motorParams.feedForwardGain = COMMON_MOTOR_PARAMS["feedForwardGain"]
+	motorParams.minPWM = MOTOR_PARAMS[str(ID)]["minPWM"]
+	motorParams.pidParameters.minOutput = COMMON_MOTOR_PARAMS["minOutput"]
+	motorParams.pidParameters.maxOutput = COMMON_MOTOR_PARAMS["maxOutput"]
+	motorParams.pidParameters.k_p = 0.6*MOTOR_PARAMS[str(ID)]["ku"]
+	motorParams.pidParameters.k_i = MOTOR_PARAMS[str(ID)]["k_i"]
+	motorParams.pidParameters.k_d = (motorParams.pidParameters.k_p*0.2)/8
+	return motorParams
+
+def getRobotInstance():
+	interface = initializeInterface()
+	enableAllMotors(interface)
+
+	for i in VALID_MOTOR_IDS:
+		motorParams = getMotorParams(interface,i)
+		interface.setMotorAngleControllerParameters(i,motorParams)
+	return interface
+
+def turn (interface,rotation_degree, direction,async) :
+	PI = math.pi
+	arcLength = (DISTANCE_BETWEEN_TWO_TYRES *PI*rotation_degree/360)
+	circumferenceTyre = TYRE_DIAMETER * PI
+	radiansToMove = (arcLength / circumferenceTyre) * 2 * PI
+
+	if direction == 'r' : # We have Checked it is Correct! :)
+		interface.increaseMotorAngleReferences(VALID_MOTOR_IDS,[radiansToMove,-radiansToMove]) 
+	elif direction == 'l':
+		interface.increaseMotorAngleReferences(VALID_MOTOR_IDS,[-radiansToMove,radiansToMove])
+	else:
+		print "INVALID INPUT"
+	
+        if not aysnc :
+                while not interface.motorAngleReferencesReached(VALID_MOTOR_IDS$
+                        time.sleep(0.01)
+
+def move(interface, direction,distance,async) :while not interface.motorAngleReferencesReached(VALID_MOTOR_IDS) :
+	circumferenceTyre = TYRE_DIAMETER * PI
+	radiansToMove = 2*PI*(distance / circumferenceTyre)
+
+	if direction == 'f' : #CHECK IF THIS WORKS
+		interface.increaseMotorAngleReferences(VALID_MOTOR_IDS,[radiansToMove,radiansToMove]) 
+	elif direction == 'b':
+		interface.increaseMotorAngleReferences(VALID_MOTOR_IDS,[-radiansToMove,-radiansToMove])
+	else:
+		print "INVALID INPUT"
+	if not aysnc : 
+        	while not interface.motorAngleReferencesReached(VALID_MOTOR_IDS) :
+                	time.sleep(0.01)
